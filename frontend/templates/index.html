@@ -3,166 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bazar.com — Book Store</title>
+  <title>Bazar.com — Lab 2</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      min-height: 100vh;
-      color: #e8e8e8;
-      padding: 24px;
+      min-height: 100vh; color: #e8e8e8; padding: 20px;
     }
-    .wrap { max-width: 900px; margin: 0 auto; }
-    header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #e94560;
-      letter-spacing: -0.5px;
-    }
-    header p { color: #a0a0b0; margin-top: 6px; font-size: 0.95rem; }
+    .wrap { max-width: 1000px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 24px; }
+    header h1 { font-size: 1.8rem; color: #e94560; }
+    header p { color: #a0a0b0; margin-top: 6px; font-size: 0.9rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     .card {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 12px; padding: 16px; margin-bottom: 16px;
     }
     .card h2 {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #e94560;
-      margin-bottom: 14px;
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+      color: #e94560; margin-bottom: 12px;
     }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
     select, input, button {
-      font-size: 1rem;
-      padding: 10px 14px;
-      border-radius: 8px;
+      font-size: 0.95rem; padding: 8px 12px; border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(0,0,0,0.25);
-      color: #fff;
+      background: rgba(0,0,0,0.25); color: #fff;
     }
-    select { min-width: 220px; cursor: pointer; }
-    input { width: 80px; }
-    button {
-      background: #e94560;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s;
-    }
+    button { background: #e94560; border: none; cursor: pointer; font-weight: 600; }
     button:hover { background: #ff6b6b; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    button.secondary {
-      background: transparent;
-      border: 1px solid #e94560;
-      color: #e94560;
-    }
-    button.secondary:hover { background: rgba(233,69,96,0.15); }
-    .books { display: grid; gap: 10px; margin-top: 14px; }
+    button.secondary { background: transparent; border: 1px solid #e94560; color: #e94560; }
+    button.warn { background: #9d0208; }
+    .health-grid { display: grid; gap: 6px; font-size: 0.85rem; }
+    .health-ok { color: #52b788; }
+    .health-down { color: #e94560; }
+    .books { display: grid; gap: 8px; margin-top: 10px; max-height: 180px; overflow-y: auto; }
     .book-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 14px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: border-color 0.2s;
+      padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;
+      cursor: pointer; border: 1px solid transparent;
     }
     .book-item:hover { border-color: #e94560; }
-    .book-item .id { color: #e94560; font-weight: 700; min-width: 28px; }
-    .book-item .title { flex: 1; margin: 0 12px; }
-    .detail {
-      display: none;
-      margin-top: 14px;
-      padding: 16px;
-      background: rgba(0,0,0,0.25);
-      border-radius: 8px;
-      border-left: 4px solid #e94560;
+    pre {
+      background: rgba(0,0,0,0.35); padding: 12px; border-radius: 8px;
+      font-size: 0.8rem; overflow-x: auto; max-height: 220px; margin-top: 10px;
+      white-space: pre-wrap; word-break: break-word;
     }
-    .detail.show { display: block; }
-    .detail dl {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 8px 16px;
-      margin-bottom: 14px;
-    }
-    .detail dt { color: #a0a0b0; }
-    .detail dd { font-weight: 500; }
+    .meta { font-size: 0.85rem; color: #a0a0b0; margin-top: 8px; }
+    .meta span { color: #e94560; margin-right: 12px; }
     .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 14px 20px;
-      border-radius: 8px;
-      font-weight: 500;
-      max-width: 360px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 100;
+      position: fixed; bottom: 20px; right: 20px; padding: 12px 18px;
+      border-radius: 8px; font-weight: 500; z-index: 100;
+      transform: translateY(80px); opacity: 0; transition: all 0.3s;
     }
     .toast.show { transform: translateY(0); opacity: 1; }
     .toast.ok { background: #2d6a4f; }
     .toast.err { background: #9d0208; }
-    .empty { color: #a0a0b0; font-style: italic; padding: 12px 0; }
     .loading { opacity: 0.6; pointer-events: none; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h1>Bazar.com</h1>
-      <p>The World's Smallest Book Store — DOS Lab</p>
+      <h1>Bazar.com — Lab 2</h1>
+      <p>Replication · Caching · Load Balancing · Consistency</p>
     </header>
 
     <section class="card">
-      <h2>Search by topic</h2>
+      <h2>Service Health</h2>
+      <button type="button" id="btnHealth">Check all services</button>
+      <div class="health-grid" id="healthGrid">Click to check replicas…</div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Search Books</h2>
+        <div class="row">
+          <select id="topic">
+            <option value="distributed systems">distributed systems</option>
+            <option value="undergraduate school">undergraduate school</option>
+            <option value="theory">theory</option>
+            <option value="spring">spring</option>
+          </select>
+          <button type="button" id="btnSearch">Search</button>
+        </div>
+        <div class="books" id="bookList"></div>
+      </section>
+
+      <section class="card">
+        <h2>Book Info & Purchase</h2>
+        <div class="row">
+          <label>ID</label>
+          <input type="number" id="bookId" min="1" max="7" value="2" style="width:70px">
+          <button type="button" id="btnInfo" class="secondary">Info</button>
+          <button type="button" id="btnBuy">Purchase</button>
+        </div>
+        <pre id="infoOut">—</pre>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Cache Controls</h2>
       <div class="row">
-        <select id="topic">
-          <option value="distributed systems">distributed systems</option>
-          <option value="undergraduate school">undergraduate school</option>
-        </select>
-        <button type="button" id="btnSearch">Search</button>
-      </div>
-      <div class="books" id="bookList">
-        <p class="empty">Pick a topic and click Search.</p>
+        <button type="button" id="btnCacheStatus" class="secondary">Cache status</button>
+        <button type="button" id="btnCacheClear" class="warn">Clear cache</button>
+        <button type="button" id="btnCacheInv" class="secondary">Invalidate item</button>
       </div>
     </section>
 
     <section class="card">
-      <h2>Book details & purchase</h2>
-      <div class="row">
-        <label>Book ID</label>
-        <input type="number" id="bookId" min="1" max="4" value="2">
-        <button type="button" id="btnInfo" class="secondary">View info</button>
-        <button type="button" id="btnBuy">Buy now</button>
-      </div>
-      <div class="detail" id="detail">
-        <dl>
-          <dt>Title</dt><dd id="dTitle">—</dd>
-          <dt>Topic</dt><dd id="dTopic">—</dd>
-          <dt>Quantity</dt><dd id="dQty">—</dd>
-          <dt>Price</dt><dd id="dPrice">—</dd>
-        </dl>
-      </div>
+      <h2>Results (JSON + metadata)</h2>
+      <div class="meta" id="metaBar"></div>
+      <pre id="resultOut">Run an action to see response…</pre>
     </section>
   </div>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    const bookList = document.getElementById("bookList");
-    const detail = document.getElementById("detail");
+    const resultOut = document.getElementById("resultOut");
+    const metaBar = document.getElementById("metaBar");
     const toast = document.getElementById("toast");
     let toastTimer;
 
@@ -170,80 +131,113 @@
       clearTimeout(toastTimer);
       toast.textContent = msg;
       toast.className = "toast show " + (ok ? "ok" : "err");
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 4000);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+    }
+
+    function showResult(data, res) {
+      resultOut.textContent = JSON.stringify(data, null, 2);
+      const served = res?.headers?.get("X-Served-By") || data?.served_by || "—";
+      const cache = res?.headers?.get("X-Cache") || data?.cache || "—";
+      metaBar.innerHTML =
+        `<span>served_by: ${served}</span><span>cache: ${cache}</span>`;
     }
 
     async function api(path, opts = {}) {
       const res = await fetch(path, opts);
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw { status: res.status, data };
-      return data;
+      if (!res.ok) throw { status: res.status, data, res };
+      return { data, res };
     }
+
+    document.getElementById("btnHealth").onclick = async () => {
+      const grid = document.getElementById("healthGrid");
+      grid.textContent = "Checking…";
+      try {
+        const { data } = await api("/proxy/health/all");
+        grid.innerHTML = Object.entries(data).map(([k, v]) => {
+          const ok = v.status === "ok" || k === "frontend";
+          const label = v.replica || k;
+          return `<div class="${ok ? "health-ok" : "health-down"}">${label}: ${v.status || "ok"}</div>`;
+        }).join("");
+        showResult(data, null);
+      } catch (e) {
+        grid.innerHTML = '<div class="health-down">Health check failed</div>';
+      }
+    };
 
     document.getElementById("btnSearch").onclick = async () => {
       const topic = document.getElementById("topic").value;
-      bookList.classList.add("loading");
+      const list = document.getElementById("bookList");
+      list.classList.add("loading");
       try {
-        const books = await api("/search/" + encodeURIComponent(topic));
-        if (!books.length) {
-          bookList.innerHTML = '<p class="empty">No books found.</p>';
+        const res = await fetch("/search/" + encodeURIComponent(topic));
+        const data = await res.json();
+        showResult(data, res);
+        if (!Array.isArray(data) || !data.length) {
+          list.innerHTML = "<p>No books.</p>";
           return;
         }
-        bookList.innerHTML = books.map(b => `
-          <div class="book-item" data-id="${b.id}">
-            <span class="id">${b.id}</span>
-            <span class="title">${b.title}</span>
-            <span>→</span>
-          </div>
-        `).join("");
-        bookList.querySelectorAll(".book-item").forEach(el => {
+        list.innerHTML = data.map(b =>
+          `<div class="book-item" data-id="${b.id}"><b>${b.id}</b> — ${b.title}</div>`
+        ).join("");
+        list.querySelectorAll(".book-item").forEach(el => {
           el.onclick = () => {
             document.getElementById("bookId").value = el.dataset.id;
-            loadInfo(el.dataset.id);
+            document.getElementById("btnInfo").click();
           };
         });
       } catch (e) {
-        showToast(e.data?.error || "Search failed", false);
-        bookList.innerHTML = '<p class="empty">Error loading books.</p>';
+        showToast("Search failed", false);
       } finally {
-        bookList.classList.remove("loading");
+        list.classList.remove("loading");
       }
     };
 
-    async function loadInfo(id) {
+    document.getElementById("btnInfo").onclick = async () => {
+      const id = document.getElementById("bookId").value;
       try {
-        const b = await api("/info/" + id);
-        document.getElementById("dTitle").textContent = b.title;
-        document.getElementById("dTopic").textContent = b.topic;
-        document.getElementById("dQty").textContent = b.quantity;
-        document.getElementById("dPrice").textContent = "$" + b.price;
-        detail.classList.add("show");
+        const res = await fetch("/info/" + id);
+        const data = await res.json();
+        document.getElementById("infoOut").textContent = JSON.stringify(data, null, 2);
+        showResult(data, res);
       } catch (e) {
-        detail.classList.remove("show");
-        showToast(e.data?.error || e.data?.message || "Book not found", false);
+        showToast("Info failed", false);
       }
-    }
-
-    document.getElementById("btnInfo").onclick = () =>
-      loadInfo(document.getElementById("bookId").value);
+    };
 
     document.getElementById("btnBuy").onclick = async () => {
       const id = document.getElementById("bookId").value;
-      const btn = document.getElementById("btnBuy");
-      btn.disabled = true;
       try {
-        const res = await api("/purchase/" + id, { method: "POST" });
-        showToast(res.message || "Purchase successful!", true);
-        loadInfo(id);
+        const res = await fetch("/purchase/" + id, { method: "POST" });
+        const data = await res.json();
+        showResult(data, res);
+        if (data.success) showToast(data.message, true);
+        else showToast(data.message || data.error, false);
+        document.getElementById("btnInfo").click();
       } catch (e) {
-        const msg = e.data?.message || e.data?.error || "Purchase failed";
-        showToast(msg, false);
-      } finally {
-        btn.disabled = false;
+        showToast(e.data?.message || "Purchase failed", false);
       }
     };
 
-    document.getElementById("btnSearch").click();
+    document.getElementById("btnCacheStatus").onclick = async () => {
+      const { data } = await api("/cache/status");
+      showResult(data, null);
+    };
+
+    document.getElementById("btnCacheClear").onclick = async () => {
+      const res = await fetch("/cache/clear", { method: "DELETE" });
+      const data = await res.json();
+      showResult(data, res);
+      showToast("Cache cleared", true);
+    };
+
+    document.getElementById("btnCacheInv").onclick = async () => {
+      const id = document.getElementById("bookId").value;
+      const res = await fetch("/cache/invalidate/" + id, { method: "DELETE" });
+      const data = await res.json();
+      showResult(data, res);
+      showToast("Invalidated item " + id, true);
+    };
   </script>
 </body>
 </html>

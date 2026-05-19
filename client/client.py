@@ -26,14 +26,14 @@ def main():
     resp = requests.get(
         f"{FRONTEND_URL}/search/distributed%20systems", timeout=TIMEOUT
     )
+    print(f"  cache: {resp.headers.get('X-Cache', 'n/a')}")
     for item in resp.json():
         print(f"{item['id']} - {item['title']}")
 
-    # 3. Search undergraduate school
-    print_section("Search: undergraduate school")
-    resp = requests.get(
-        f"{FRONTEND_URL}/search/undergraduate%20school", timeout=TIMEOUT
-    )
+    # 3. Search theory (Lab 2 book)
+    print_section("Search: theory")
+    resp = requests.get(f"{FRONTEND_URL}/search/theory", timeout=TIMEOUT)
+    print(f"  cache: {resp.headers.get('X-Cache', 'n/a')}")
     for item in resp.json():
         print(f"{item['id']} - {item['title']}")
 
@@ -45,6 +45,8 @@ def main():
         print(f"Title: {data['title']}")
         print(f"Quantity: {data['quantity']}")
         print(f"Price: {data['price']}")
+        print(f"Cache: {data.get('cache', resp.headers.get('X-Cache', 'n/a'))}")
+        print(f"Served by: {data.get('served_by', 'n/a')}")
     else:
         print(resp.json())
 
@@ -65,6 +67,8 @@ def main():
         print(f"Title: {data['title']}")
         print(f"Quantity: {data['quantity']}")
         print(f"Price: {data['price']}")
+        print(f"Cache: {data.get('cache', resp.headers.get('X-Cache', 'n/a'))}")
+        print(f"Served by: {data.get('served_by', 'n/a')}")
     else:
         print(resp.json())
 
