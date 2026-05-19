@@ -1,0 +1,108 @@
+Sample output from running: docker compose up --build
+Then: python client/client.py
+
+================================================================================
+$ curl http://localhost:5000/health
+{"service":"frontend","status":"ok"}
+
+================================================================================
+$ curl http://localhost:5000/search/distributed%20systems
+[
+  {"id":1,"title":"How to get a good grade in DOS in 40 minutes a day"},
+  {"id":2,"title":"RPCs for Noobs"}
+]
+
+================================================================================
+$ curl http://localhost:5000/info/2
+{
+  "id":2,
+  "title":"RPCs for Noobs",
+  "topic":"distributed systems",
+  "quantity":5,
+  "price":50
+}
+
+================================================================================
+$ curl -X POST http://localhost:5000/purchase/2
+{
+  "success":true,
+  "message":"bought book RPCs for Noobs",
+  "order":{
+    "id":1,
+    "book_id":2,
+    "book_title":"RPCs for Noobs",
+    "price":50,
+    "status":"completed",
+    "created_at":"2026-05-19T14:30:00.123456+00:00"
+  }
+}
+
+Docker logs (order service):
+[Order] Purchase request for item 2
+[Order] Checking stock through Catalog Service
+[Order] bought book RPCs for Noobs
+bought book RPCs for Noobs
+
+================================================================================
+$ curl http://localhost:5000/info/2
+{
+  "id":2,
+  "title":"RPCs for Noobs",
+  "topic":"distributed systems",
+  "quantity":4,
+  "price":50
+}
+
+================================================================================
+$ curl -X POST http://localhost:5000/purchase/999
+{"success":false,"message":"Book not found"}
+
+================================================================================
+$ curl http://localhost:5002/orders
+[
+  {
+    "id":1,
+    "book_id":2,
+    "book_title":"RPCs for Noobs",
+    "price":50,
+    "status":"completed",
+    "created_at":"2026-05-19T14:30:00.123456+00:00"
+  }
+]
+
+================================================================================
+$ python client/client.py
+
+Bazar.com Client - Testing Frontend Service
+Frontend URL: http://localhost:5000
+
+=== Health Check ===
+{'service': 'frontend', 'status': 'ok'}
+
+=== Search: distributed systems ===
+1 - How to get a good grade in DOS in 40 minutes a day
+2 - RPCs for Noobs
+
+=== Search: undergraduate school ===
+3 - Xen and the Art of Surviving Undergraduate School
+4 - Cooking for the Impatient Undergrad
+
+=== Info: Item 2 ===
+Title: RPCs for Noobs
+Quantity: 5
+Price: 50
+
+=== Purchase: Item 2 ===
+bought book RPCs for Noobs
+
+=== Info: Item 2 (after purchase) ===
+Title: RPCs for Noobs
+Quantity: 4
+Price: 50
+
+=== Purchase: Invalid Item 999 ===
+{'success': False, 'message': 'Book not found'}
+
+=== Orders (from Order Service) ===
+Note: Orders are listed directly from http://localhost:5002/orders
+Order #1: RPCs for Noobs ($50) - completed at 2026-05-19T14:30:00.123456+00:00

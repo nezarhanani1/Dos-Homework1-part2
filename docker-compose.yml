@@ -1,0 +1,29 @@
+services:
+  catalog:
+    build: ./catalog
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./catalog/data:/app/data
+
+  order:
+    build: ./order
+    ports:
+      - "5002:5002"
+    environment:
+      CATALOG_URL: http://catalog:5001
+    volumes:
+      - ./order/data:/app/data
+    depends_on:
+      - catalog
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5000:5000"
+    environment:
+      CATALOG_URL: http://catalog:5001
+      ORDER_URL: http://order:5002
+    depends_on:
+      - catalog
+      - order
